@@ -71,8 +71,9 @@ El repositorio previo **no fue modificado**.
 | Euler explícito, Δt = 2 s | Estable para las constantes de tiempo del modelo (térmica ≈ 130 s, recinto ≈ 600 s); 1 800 pasos por hora simulada (< 5 ms). | Integradores adaptativos (complejidad sin beneficio). |
 | Disparos con enclavamiento y rearme condicionado | Refleja la práctica de seguridad funcional a nivel conceptual: despejar una alarma ≠ rearmar. | Disparos que se autorearman. |
 | PLC actúa sobre la variable **medida**; PSV sobre la **real** | Permite el escenario pedagógico de falla de instrumentación (capas de protección independientes). | Una sola presión. |
+| Pruebas E2E con `@playwright/test` (`e2e/demo.e2e.ts`) | El recorrido de demostración de 13 pasos se verificaba a mano; ahora se repite con `npm run e2e` antes de cada presentación. Playwright arranca la compilación de producción (`npm run build && npm start`), maneja WebGL real (las etiquetas 3D de drei son DOM), espera solo lo necesario (*auto-waiting*), permite usar el Edge instalado (`PW_CHANNEL=msedge`) si no se pueden descargar navegadores, y deja traza y captura cuando algo falla. Archivos `*.e2e.ts` para que Vitest no los recoja. | Cypress (iframe propio, WebGL e hidratación más frágiles, dependencia más pesada); `@testing-library` + jsdom en Vitest (sin WebGL ni navegador real: no prueba la escena ni la persistencia al recargar). |
 
-Dependencias nuevas respecto al repositorio previo: **ninguna** (se quitaron Prisma, date-fns y postprocessing; se añadió `@types/three` y se actualizó `@types/node` a ^24 para resolver un conflicto de *peer dependencies* con Vitest 5 sin usar `--legacy-peer-deps`).
+Dependencias nuevas respecto al repositorio previo: **ninguna** (se quitaron Prisma, date-fns y postprocessing; se añadió `@types/three` y se actualizó `@types/node` a ^24 para resolver un conflicto de *peer dependencies* con Vitest 5 sin usar `--legacy-peer-deps`). Después se añadió una sola dependencia de desarrollo, `@playwright/test`, para las pruebas E2E (no forma parte del paquete que se sirve).
 
 ## 4. Rendimiento (medido)
 

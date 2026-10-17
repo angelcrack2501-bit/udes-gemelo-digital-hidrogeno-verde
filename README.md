@@ -52,7 +52,10 @@ npm run lint        # ESLint (configuración de Next.js)
 npm run typecheck   # TypeScript estricto
 npm test            # 43 pruebas (Vitest): electroquímica, motor, escenarios, topología, misión, guía
 npm run build       # compilación de producción
+npm run e2e         # recorrido de demostración en el navegador (Playwright, 8 pruebas)
 ```
+
+`npm run e2e` compila y arranca la versión de producción en el puerto 3000 y recorre la demostración: carga con R-001, etiqueta 3D → inspector, árbol del explorador, ESC-03 con disparo PAHH ≈ 48,8 min, intervención en el minuto 25 («mejor» en presión máx.), misión M-01 con 100/100, la guía ante «¿Cuál es la presión real de la planta UDES ahora?» y determinismo al recargar. La primera vez: `npx playwright install chromium`. Sin descarga posible: `PW_CHANNEL=msedge npm run e2e`. Con el puerto 3000 ocupado: `E2E_PORT=3100 npm run e2e`. Informe HTML de fallos: `npx playwright show-report`.
 
 ## Recorrido de demostración (resumen)
 
