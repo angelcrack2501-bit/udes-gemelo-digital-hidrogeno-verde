@@ -71,7 +71,7 @@ export default function GuidePanel() {
           {turns.map((t) => (
             <div key={t.id} className="space-y-1.5">
               <div className="flex justify-end">
-                <div className="max-w-[85%] rounded-lg px-3 py-1.5 small bg-[#0e2a36] border border-[#22d3ee44]">{t.question}</div>
+                <div className="max-w-[85%] rounded-lg px-3 py-1.5 small bg-[var(--brand-soft)] border border-[var(--brand-line)]">{t.question}</div>
               </div>
               <div className="card !p-3" data-testid="guide-answer">
                 <div className="small font-semibold mb-1">{t.answer.title}</div>

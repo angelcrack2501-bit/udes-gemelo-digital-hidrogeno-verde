@@ -16,33 +16,33 @@ type GroupId = "pressure" | "temperature" | "production" | "power" | "efficiency
 const GROUPS: Record<GroupId, { title: string; unit: string; vars: { id: VariableId; label: string; color: string }[]; thresholds: ChartThreshold[] }> = {
   pressure: {
     title: "Presión TK-201", unit: "bar",
-    vars: [{ id: "p_tank", label: "Real (modelo)", color: "#22d3ee" }, { id: "p_tank_meas", label: "PT-201 (medida)", color: "#f8fafc" }],
-    thresholds: [{ value: LIMITS.PAH.value, label: "PAH", color: "#f59e0b" }, { value: LIMITS.PAHH.value, label: "PAHH", color: "#ef4444" }, { value: STORAGE.PSV_SET.value, label: "PSV", color: "#f472b6" }],
+    vars: [{ id: "p_tank", label: "Real (modelo)", color: "var(--series1)" }, { id: "p_tank_meas", label: "PT-201 (medida)", color: "var(--series2)" }],
+    thresholds: [{ value: LIMITS.PAH.value, label: "PAH", color: "var(--warn)" }, { value: LIMITS.PAHH.value, label: "PAHH", color: "var(--crit)" }, { value: STORAGE.PSV_SET.value, label: "PSV", color: "var(--fault)" }],
   },
   temperature: {
     title: "Temperatura de pila TT-101", unit: "°C",
-    vars: [{ id: "t_stack", label: "T pila", color: "#fb923c" }],
-    thresholds: [{ value: THERMAL.T_SET.value, label: "Consigna", color: "#64748b" }, { value: LIMITS.TAH.value, label: "TAH", color: "#f59e0b" }, { value: LIMITS.TAHH.value, label: "TAHH", color: "#ef4444" }],
+    vars: [{ id: "t_stack", label: "T pila", color: "var(--series4)" }],
+    thresholds: [{ value: THERMAL.T_SET.value, label: "Consigna", color: "var(--idle)" }, { value: LIMITS.TAH.value, label: "TAH", color: "var(--warn)" }, { value: LIMITS.TAHH.value, label: "TAHH", color: "var(--crit)" }],
   },
   production: {
     title: "Producción y consumo de H2", unit: "kg/h",
-    vars: [{ id: "h2_kgh", label: "Producción", color: "#22d3ee" }, { id: "fc_h2", label: "Consumo FC-401", color: "#a3e635" }],
+    vars: [{ id: "h2_kgh", label: "Producción", color: "var(--series1)" }, { id: "fc_h2", label: "Consumo FC-401", color: "var(--series3)" }],
     thresholds: [],
   },
   power: {
     title: "Potencia", unit: "kW",
-    vars: [{ id: "p_stack", label: "Pila", color: "#f2b33d" }, { id: "pv_avail", label: "FV disponible", color: "#fde68a" }, { id: "fc_power", label: "FC-401", color: "#a3e635" }],
+    vars: [{ id: "p_stack", label: "Pila", color: "var(--series1)" }, { id: "pv_avail", label: "FV disponible", color: "var(--series5)" }, { id: "fc_power", label: "FC-401", color: "var(--series3)" }],
     thresholds: [],
   },
   efficiency: {
     title: "Eficiencia de pila (PCS)", unit: "%",
-    vars: [{ id: "eff_hhv", label: "η PCS", color: "#2dd4bf" }],
+    vars: [{ id: "eff_hhv", label: "η PCS", color: "var(--series1)" }],
     thresholds: [],
   },
   room: {
     title: "H2 en el recinto GD-301", unit: "% LIE",
-    vars: [{ id: "room_lel", label: "Concentración", color: "#f472b6" }],
-    thresholds: [{ value: LIMITS.GD_AH.value, label: "Alarma", color: "#f59e0b" }, { value: LIMITS.GD_AHH.value, label: "Disparo", color: "#ef4444" }],
+    vars: [{ id: "room_lel", label: "Concentración", color: "var(--series4)" }],
+    thresholds: [{ value: LIMITS.GD_AH.value, label: "Alarma", color: "var(--warn)" }, { value: LIMITS.GD_AHH.value, label: "Disparo", color: "var(--crit)" }],
   },
 };
 
@@ -68,7 +68,7 @@ function seriesFor(run: SimulationResult, group: GroupId, dashed = false, suffix
 function markersFor(run: SimulationResult): ChartMarker[] {
   return run.events
     .filter((e) => e.kind !== "alarm_clear")
-    .map((e) => ({ t: e.t, color: e.severity === "critica" ? "#ef4444" : e.severity === "advertencia" ? "#f59e0b" : "#93c5fd", label: `${e.id} ${e.title}` }));
+    .map((e) => ({ t: e.t, color: e.severity === "critica" ? "var(--crit)" : e.severity === "advertencia" ? "var(--warn)" : "var(--brand-ink)", label: `${e.id} ${e.title}` }));
 }
 
 export default function BottomDock() {
@@ -219,7 +219,7 @@ function EventTable({ run }: { run: SimulationResult }) {
           {run.events.map((e) => (
             <tr
               key={e.id}
-              className={`cursor-pointer hover:bg-[#13202f] ${state.focusEventId === e.id ? "bg-[#0d2533]" : ""}`}
+              className={`cursor-pointer hover:bg-[var(--panel2)] ${state.focusEventId === e.id ? "bg-[var(--brand-soft)]" : ""}`}
               onClick={() => {
                 dispatch({ type: "focusEvent", id: e.id });
                 dispatch({ type: "playhead", index: Math.round(e.t / NUMERICS.SAMPLE_EVERY_S) });

@@ -1,27 +1,20 @@
 @import "tailwindcss";
 
 /* Tema oscuro fijo: entorno de laboratorio industrial pensado para proyección. */
+/*
+ * Las variables de color se generan desde src/theme/tokens.ts (themeCss) y se
+ * inyectan en <head> desde src/app/layout.tsx, con modo oscuro y claro.
+ * Aquí solo hay alias de compatibilidad y medidas.
+ */
 :root {
-  --bg: #0a0f16;
-  --bg-2: #0e1520;
-  --panel: #111a26;
-  --panel-2: #152131;
-  --panel-3: #1b2a3d;
-  --line: #22324a;
-  --line-2: #2c405c;
-  --text: #e3ebf5;
-  --text-2: #a9b8ca;
-  --text-3: #73859b;
-  --accent: #22d3ee;
-  --accent-2: #2dd4bf;
-  --accent-dim: #0e7490;
-  --h2: #22d3ee;
-  --ok: #2dd4bf;
-  --warn: #f59e0b;
-  --crit: #ef4444;
-  --fault: #f97316;
-  --idle: #64748b;
-  --sim: #a78bfa;
+  --bg-2: var(--bg2);
+  --panel-2: var(--panel2);
+  --panel-3: var(--panel3);
+  --line-2: var(--line2);
+  --text-2: var(--text2);
+  --text-3: var(--text3);
+  --accent: var(--brand-ink);
+  --accent-2: var(--brand);
   --radius: 8px;
 }
 
@@ -30,8 +23,8 @@
   --color-panel: var(--panel);
   --color-line: var(--line);
   --color-accent: var(--accent);
-  --font-sans: var(--font-plex-sans);
-  --font-mono: var(--font-plex-mono);
+  --font-sans: var(--font-open-sans);
+  --font-mono: var(--font-open-sans);
 }
 
 html,
@@ -39,18 +32,21 @@ body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-plex-sans), "Segoe UI", system-ui, sans-serif;
+  font-family: var(--font-open-sans), "Open Sans", "Segoe UI", system-ui, sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2c405c transparent;
+  scrollbar-color: var(--line2) transparent;
 }
 
+/* Datos numéricos y etiquetas técnicas: Open Sans con cifras tabulares (no se usa otra familia). */
 .mono {
-  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-family: var(--font-open-sans), "Open Sans", sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
 }
 
 /* ---------- estructura ---------- */
@@ -67,7 +63,8 @@ body {
   gap: 16px;
   padding: 0 16px;
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, #0f1824, #0b121b);
+  background: var(--panel);
+  box-shadow: inset 0 -2px 0 var(--udes-dorado);
   overflow: hidden;
   min-width: 0;
 }
@@ -75,7 +72,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 220px;
+  flex: none;
 }
 .brand-mark {
   width: 28px;
@@ -83,8 +80,8 @@ body {
   border-radius: 7px;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 30% 30%, #67e8f9, #0e7490 70%);
-  color: #04131a;
+  background: var(--brand);
+  color: var(--on-brand);
   font-weight: 700;
   font-size: 12px;
 }
@@ -130,9 +127,10 @@ body {
   color: var(--text);
 }
 .rail-btn.active {
-  background: #0e2a36;
-  color: var(--accent);
-  box-shadow: inset 2px 0 0 var(--accent);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  /* Indicador activo en Dorado UDES (acento); pieza con 2 colores institucionales como máximo. */
+  box-shadow: inset 3px 0 0 var(--udes-dorado);
 }
 .rail-btn svg {
   width: 20px;
@@ -170,7 +168,7 @@ body {
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  background: #0b1018;
+  background: var(--scene-bg);
 }
 
 /* ---------- componentes ---------- */
@@ -216,20 +214,21 @@ body {
   white-space: nowrap;
 }
 .btn:hover:not(:disabled) {
-  border-color: #3d5878;
-  background: #213349;
+  border-color: var(--brand-line);
+  background: var(--panel2);
 }
 .btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 .btn-primary {
-  background: linear-gradient(180deg, #0ea5c4, #0e7490);
-  border-color: #22d3ee66;
-  color: #f0fdff;
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand);
 }
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(180deg, #22b8d6, #0f86a5);
+  background: var(--brand);
+  filter: brightness(1.12);
 }
 .btn-ghost {
   background: transparent;
@@ -242,6 +241,7 @@ body {
   font-size: 12px;
 }
 .chip {
+  flex: none;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -251,33 +251,33 @@ body {
   font-size: 11px;
   border: 1px solid var(--line-2);
   color: var(--text-2);
-  background: #0f1926;
+  background: var(--panel2);
   white-space: nowrap;
 }
 .chip-sim {
-  color: #d8ccff;
-  border-color: #6d5bd066;
-  background: #1a1630;
+  color: var(--sim);
+  border-color: color-mix(in srgb, var(--sim) 40%, transparent);
+  background: var(--sim-soft);
 }
 .chip-concept {
-  color: #fcd9a0;
-  border-color: #b4790066;
-  background: #241b0c;
+  color: var(--warn);
+  border-color: color-mix(in srgb, var(--warn) 40%, transparent);
+  background: var(--warn-soft);
 }
 .chip-lit {
-  color: #a7f3d0;
-  border-color: #05966966;
-  background: #0b2219;
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 40%, transparent);
+  background: var(--ok-soft);
 }
 .chip-off {
-  color: #fca5a5;
-  border-color: #b91c1c66;
-  background: #250f12;
+  color: var(--crit);
+  border-color: color-mix(in srgb, var(--crit) 40%, transparent);
+  background: var(--crit-soft);
 }
 .chip-ok {
-  color: #99f6e4;
-  border-color: #0d948866;
-  background: #0b2220;
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 40%, transparent);
+  background: var(--ok-soft);
 }
 .dot {
   width: 8px;
@@ -333,13 +333,13 @@ select.input {
   height: 32px;
   border-radius: 7px;
   border: 1px solid var(--line-2);
-  background: #0c1520;
+  background: var(--panel2);
   color: var(--text);
   padding: 0 10px;
   font-size: 13px;
 }
 .input:focus {
-  outline: 2px solid #22d3ee55;
+  outline: 2px solid color-mix(in srgb, var(--brand-ink) 45%, transparent);
   border-color: var(--accent);
 }
 .seg {
@@ -353,10 +353,10 @@ select.input {
   padding: 0 10px;
   font-size: 12px;
   color: var(--text-2);
-  background: #0c1520;
+  background: var(--panel2);
 }
 .seg button.on {
-  background: #0e2a36;
+  background: var(--brand-soft);
   color: var(--accent);
 }
 .list-btn {
@@ -370,25 +370,25 @@ select.input {
 }
 .list-btn:hover {
   border-color: var(--line-2);
-  background: #182638;
+  background: var(--panel3);
 }
 .list-btn.on {
-  border-color: #22d3ee88;
-  background: #0d2533;
+  border-color: var(--brand-line);
+  background: var(--brand-soft);
 }
 .notice {
-  border: 1px solid #b4790055;
-  background: #1d1709;
-  color: #f5d9a6;
+  border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+  background: var(--warn-soft);
+  color: var(--text);
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 12px;
   line-height: 1.45;
 }
 .notice-info {
-  border-color: #0e749055;
-  background: #0a1d26;
-  color: #bdeaf5;
+  border-color: var(--brand-line);
+  background: var(--brand-soft);
+  color: var(--text);
 }
 .table {
   width: 100%;
@@ -405,12 +405,12 @@ select.input {
 }
 .table td {
   padding: 6px 8px;
-  border-bottom: 1px solid #1a283b;
+  border-bottom: 1px solid var(--line);
   vertical-align: top;
   font-variant-numeric: tabular-nums;
 }
 .sev-info {
-  color: #93c5fd;
+  color: var(--brand-ink);
 }
 .sev-advertencia {
   color: var(--warn);
@@ -426,11 +426,11 @@ select.input {
   gap: 6px;
   padding: 2px 7px;
   border-radius: 5px;
-  background: rgba(9, 15, 23, 0.82);
-  border: 1px solid rgba(80, 110, 145, 0.45);
-  color: #dbe7f3;
+  background: var(--label-bg);
+  border: 1px solid var(--line2);
+  color: var(--label-text);
   font-size: 10.5px;
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-open-sans), sans-serif;
   white-space: nowrap;
   cursor: pointer;
   backdrop-filter: blur(4px);
@@ -438,37 +438,40 @@ select.input {
   user-select: none;
 }
 .scene-label:hover {
-  border-color: #22d3ee;
+  border-color: var(--brand-line);
 }
 .scene-label.is-selected {
-  border-color: #22d3ee;
-  background: rgba(8, 47, 61, 0.92);
-  box-shadow: 0 0 0 1px #22d3ee55, 0 6px 18px #0008;
+  border-color: var(--brand-line);
+  background: var(--brand);
+  color: var(--on-brand);
+  box-shadow: 0 0 0 1px var(--udes-dorado), 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 .scene-label .name {
-  font-family: var(--font-plex-sans), sans-serif;
-  color: #9fe8f5;
+  font-family: var(--font-open-sans), sans-serif;
+  color: var(--on-brand);
 }
 .inst-label {
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 9.5px;
-  font-family: var(--font-plex-mono), monospace;
-  background: rgba(241, 245, 249, 0.9);
-  color: #0f172a;
+  font-family: var(--font-open-sans), sans-serif;
+  background: var(--label-bg);
+  color: var(--label-text);
+  border: 1px solid var(--line2);
   white-space: nowrap;
   pointer-events: none;
 }
 .inst-label.soft {
-  background: rgba(167, 139, 250, 0.92);
+  background: var(--sim-soft);
+  color: var(--sim);
 }
 .zone-label {
   padding: 3px 8px;
   border-radius: 4px;
   font-size: 10.5px;
-  background: rgba(10, 16, 24, 0.75);
-  color: #a9c6d6;
-  border: 1px dashed #3b5674;
+  background: var(--label-bg);
+  color: var(--text2);
+  border: 1px dashed var(--line2);
   white-space: nowrap;
   pointer-events: none;
 }
@@ -491,11 +494,11 @@ select.input {
   z-index: 30;
 }
 .glass {
-  background: rgba(13, 21, 32, 0.9);
+  background: var(--glass);
   border: 1px solid var(--line-2);
   border-radius: 10px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 10px 30px #0007;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 .toolbar {
   display: flex;
@@ -514,11 +517,11 @@ select.input {
   gap: 5px;
 }
 .tool:hover {
-  background: #1b2a3d;
+  background: var(--panel3);
   color: var(--text);
 }
 .tool.on {
-  background: #0e2a36;
+  background: var(--brand-soft);
   color: var(--accent);
 }
 .sep {
@@ -581,21 +584,21 @@ select.input {
 }
 .tab.on {
   color: var(--accent);
-  background: #0e2a36;
+  background: var(--brand-soft);
 }
 
 /* ---------- gráficas ---------- */
 .chart text {
   fill: var(--text-3);
   font-size: 10px;
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-open-sans), sans-serif;
 }
 .chart .grid line {
-  stroke: #1c2b3f;
+  stroke: var(--chart-grid);
 }
 .chart .axis line,
 .chart .axis path {
-  stroke: #2c405c;
+  stroke: var(--chart-axis);
 }
 
 /* ---------- documentación ---------- */
@@ -615,13 +618,13 @@ select.input {
   padding-left: 18px;
 }
 .formula {
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-open-sans), sans-serif;
   font-size: 12.5px;
-  background: #0a131d;
+  background: var(--panel2);
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 8px 10px;
-  color: #c7f2fb;
+  color: var(--text);
   line-height: 1.7;
   overflow-x: auto;
 }
@@ -641,4 +644,61 @@ select.input {
   .dock-content {
     height: 196px;
   }
+}
+
+/* ---------- bloque de marca UDES ---------- */
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 14px;
+  margin-right: 2px;
+  border-right: 1px solid var(--line);
+}
+.logo-slot {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+}
+.logo-slot.is-empty {
+  border: 1px dashed var(--line2);
+  color: var(--text3);
+  font-size: 8.5px;
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+.logo-slot img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.uni-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.15;
+}
+.vigilada {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  line-height: 1.3;
+}
+.theme-toggle {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line2);
+  color: var(--text2);
+  font-size: 12px;
+  background: var(--panel2);
+}
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--brand-line);
 }

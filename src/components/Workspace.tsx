@@ -7,7 +7,9 @@ import { CAMERA_PRESETS, FLUID_COLOR } from "@/scene/layout";
 import { FLUID_LABEL } from "@/domain/topology";
 import type { Fluid } from "@/domain/types";
 import { TwinProvider, useCurrentSample, useTwin, type SectionId } from "@/state/store";
+import { ThemeProvider, useTheme } from "@/theme/ThemeProvider";
 import BottomDock from "./BottomDock";
+import BrandLockup from "./BrandLockup";
 import DocsView from "./DocsView";
 import Inspector from "./Inspector";
 import { Icon } from "./icons";
@@ -48,23 +50,24 @@ function TopBar() {
   const el = sample?.flags.electrolyzer;
   return (
     <header className="topbar">
-      <div className="brand">
-        <div className="brand-mark">H₂</div>
-        <div>
+      <BrandLockup />
+      <div className="brand !min-w-0">
+        <div className="brand-mark" aria-hidden>H₂</div>
+        <div className="min-w-0">
           <div className="brand-title">HYDRO-TWIN UDES</div>
-          <div className="brand-sub">Entorno digital educativo · hidrógeno verde</div>
+          <div className="brand-sub whitespace-nowrap">Ingeniería de Inteligencia Artificial</div>
         </div>
       </div>
-      <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex items-center gap-1.5 flex-none">
         <span className="chip chip-concept" title="Configuración de planta no verificada contra la instalación UDES">Planta conceptual</span>
         <span className="chip chip-sim" title="Todas las variables provienen del modelo determinista HT-SIM">Simulación determinista</span>
         <span className="chip chip-off" title="No hay conexión con sensores ni con el sistema de control de la planta">Sin conexión a planta</span>
       </div>
       <div className="flex-1" />
       {sc && sample && (
-        <div className="flex items-center gap-3 small" data-testid="topbar-status">
-          <span className="muted">Corrida <span className="mono text-[var(--text)]">{activeRun!.id}</span> · <span className="mono text-[var(--accent)]">{sc.code}</span> {sc.title}</span>
-          <span className="mono">{fmtMin(sample.t)}</span>
+        <div className="flex items-center gap-3 small min-w-0" data-testid="topbar-status">
+          <span className="muted whitespace-nowrap" title={sc.title}>Corrida <span className="mono text-[var(--text)]">{activeRun!.id}</span> · <span className="mono text-[var(--accent)]">{sc.code}</span></span>
+          <span className="mono whitespace-nowrap">{fmtMin(sample.t)}</span>
           <span className="chip" style={{ color: el === "tripped" ? "var(--crit)" : el === "running" ? "var(--ok)" : "var(--text-3)" }}>
             <span className="dot" style={{ background: el === "tripped" ? "var(--crit)" : el === "running" ? "var(--ok)" : "var(--idle)" }} />
             EL-101 {el === "tripped" ? `disparada (${sample.flags.tripCause})` : el === "running" ? "operando" : "en espera"}
@@ -72,7 +75,17 @@ function TopBar() {
           <span className="chip" style={{ color: alarms.length ? "var(--warn)" : "var(--text-3)" }}>{alarms.length ? `Alarmas: ${alarms.join(", ")}` : "Sin alarmas activas"}</span>
         </div>
       )}
+      <ThemeToggle />
     </header>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, toggle } = useTheme();
+  return (
+    <button className="theme-toggle flex-none" onClick={toggle} aria-label={theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"} data-testid="theme-toggle">
+      {theme === "dark" ? "☀ Modo claro" : "☾ Modo oscuro"}
+    </button>
   );
 }
 
@@ -190,8 +203,10 @@ function Shell() {
 
 export default function Workspace() {
   return (
-    <TwinProvider>
-      <Shell />
-    </TwinProvider>
+    <ThemeProvider>
+      <TwinProvider>
+        <Shell />
+      </TwinProvider>
+    </ThemeProvider>
   );
 }

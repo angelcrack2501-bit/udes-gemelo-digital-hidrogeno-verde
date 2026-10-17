@@ -53,7 +53,7 @@ export default function OverviewPanel() {
         <ol className="space-y-1.5" data-testid="maturity-ladder">
           {LADDER.map((l, i) => (
             <li key={l.level} className="flex items-start gap-2.5">
-              <span className={`mt-0.5 w-5 h-5 rounded-full grid place-items-center text-[10px] mono flex-none ${l.status === "yes" ? "bg-[#0b2220] text-[var(--ok)] border border-[#0d948888]" : "bg-[#1a1f27] text-[var(--text-3)] border border-[var(--line-2)]"}`}>{i + 1}</span>
+              <span className={`mt-0.5 w-5 h-5 rounded-full grid place-items-center text-[10px] mono flex-none ${l.status === "yes" ? "bg-[var(--ok-soft)] text-[var(--ok)] border border-[var(--ok)]" : "bg-[var(--panel2)] text-[var(--text-3)] border border-[var(--line-2)]"}`}>{i + 1}</span>
               <div>
                 <div className={`small font-medium ${l.status === "yes" ? "" : "text-[var(--text-3)]"}`}>{l.level} {l.status === "yes" ? <span className="text-[var(--ok)]">✓</span> : <span className="tiny muted">— no alcanzado</span>}</div>
                 <div className="tiny muted">{l.note}</div>

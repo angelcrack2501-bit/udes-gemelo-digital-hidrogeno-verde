@@ -70,12 +70,14 @@ function Schematic({ selected, onSelect }: { selected: string | null; onSelect: 
           <g key={e.id} transform={`translate(${x - W / 2},${y - H / 2})`} className="cursor-pointer" onClick={() => onSelect(e.id)}>
             <rect
               width={W} height={H} rx={4}
-              fill={isSel ? "#0d3546" : "#111c2a"}
-              stroke={isSel ? "#22d3ee" : rel === "down" ? "#22d3ee88" : rel === "up" ? "#f59e0b88" : "#2c405c"}
+              style={{
+                fill: isSel ? "var(--brand)" : "var(--panel2)",
+                stroke: isSel ? "var(--udes-dorado)" : rel === "down" ? "var(--brand-line)" : rel === "up" ? "var(--warn)" : "var(--line2)",
+              }}
               strokeWidth={isSel ? 1.8 : 1}
             />
-            <circle cx={7} cy={H / 2} r={3} fill={STATUS_CSS[st.status]} />
-            <text x={W / 2 + 4} y={H / 2 + 3.5} textAnchor="middle" fontSize={9.5} fill={isSel ? "#e0fbff" : "#c3d1e0"} fontFamily="var(--font-plex-mono)">{e.id}</text>
+            <circle cx={7} cy={H / 2} r={3} style={{ fill: STATUS_CSS[st.status] }} />
+            <text x={W / 2 + 4} y={H / 2 + 3.5} textAnchor="middle" fontSize={9.5} style={{ fill: isSel ? "var(--on-brand)" : "var(--text)", fontFamily: "var(--font-open-sans)", fontWeight: 600 }}>{e.id}</text>
             <title>{`${e.name} — ${st.label}`}</title>
           </g>
         );

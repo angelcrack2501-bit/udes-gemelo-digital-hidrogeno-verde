@@ -78,15 +78,16 @@ const RACK_Y: Record<Fluid, number> = {
   vent: 2.6,
 };
 
+/** Código de colores de fluidos (funcional, tipo P&ID); legible en modo claro y oscuro. */
 export const FLUID_COLOR: Record<Fluid, string> = {
-  electric: "#f2b33d",
-  signal: "#a78bfa",
+  electric: "#eab308",
+  signal: "#8b5cf6",
   raw_water: "#60a5fa",
   di_water: "#3b82f6",
   coolant: "#22c55e",
-  h2: "#22d3ee",
-  o2: "#e2e8f0",
-  vent: "#94a3b8",
+  h2: "#06b6d4",
+  o2: "#9fb0c3",
+  vent: "#64748b",
 };
 
 export const FLUID_RADIUS: Record<Fluid, number> = {

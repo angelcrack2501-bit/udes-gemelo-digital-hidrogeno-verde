@@ -48,7 +48,7 @@ export default function TrainingPanel() {
           <p className="small muted mt-1 leading-relaxed">{MISSION.objective}</p>
           <div className="flex gap-1 mt-3" aria-label="Progreso de la misión">
             {MISSION.steps.map((s, i) => (
-              <div key={s.kind} title={s.title} className="h-1.5 flex-1 rounded-full" style={{ background: i < p.stepIndex ? "var(--accent-2)" : i === p.stepIndex ? "var(--accent)" : "#22324a" }} />
+              <div key={s.kind} title={s.title} className="h-1.5 flex-1 rounded-full" style={{ background: i < p.stepIndex ? "var(--brand)" : i === p.stepIndex ? "var(--udes-dorado)" : "var(--line)" }} />
             ))}
           </div>
           <div className="tiny muted mt-1">Paso {p.stepIndex + 1} de {MISSION.steps.length}: {step.title}</div>
@@ -69,7 +69,7 @@ export default function TrainingPanel() {
                   <li key={id}>
                     <button className="w-full flex items-center justify-between small hover:text-[var(--accent)]" onClick={() => dispatch({ type: "select", id })}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-4 h-4 rounded grid place-items-center text-[10px] ${done ? "bg-[var(--accent-2)] text-[#042f2e]" : "border border-[var(--line-2)]"}`}>{done ? "✓" : ""}</span>
+                        <span className={`w-4 h-4 rounded grid place-items-center text-[10px] ${done ? "bg-[var(--brand)] text-[var(--on-brand)]" : "border border-[var(--line-2)]"}`}>{done ? "✓" : ""}</span>
                         <span className="mono">{id}</span> {equipmentById.get(id)!.name}
                       </span>
                       <span className="tiny muted">{done ? "inspeccionado" : "seleccionar"}</span>
@@ -155,7 +155,7 @@ export default function TrainingPanel() {
                   <span className="small font-medium"><span className="mono muted mr-1">{c.id}</span>{c.title}</span>
                   <span className="mono small">{c.score}/{c.max}</span>
                 </div>
-                <div className="h-1 rounded-full bg-[#22324a] mt-1.5"><div className="h-1 rounded-full bg-[var(--accent-2)]" style={{ width: `${(c.score / c.max) * 100}%` }} /></div>
+                <div className="h-1 rounded-full bg-[var(--line)] mt-1.5"><div className="h-1 rounded-full bg-[var(--accent-2)]" style={{ width: `${(c.score / c.max) * 100}%` }} /></div>
                 <ul className="mt-2 space-y-1 tiny text-[var(--text-2)] list-disc pl-4">{c.feedback.map((f) => <li key={f}>{f}</li>)}</ul>
               </div>
             ))}

@@ -128,15 +128,15 @@ export default function LineChart({
             </g>
             {yTicks.map((v) => <text key={v} x={pad.l - 6} y={y(v) + 3} textAnchor="end">{v.toLocaleString("es-CO", { minimumFractionDigits: yDigits, maximumFractionDigits: yDigits })}</text>)}
             {xTicks.map((t) => <text key={t} x={x(t)} y={height - 6} textAnchor="middle">{fmt(t / 60, 0)}</text>)}
-            <text x={pad.l - 6} y={height - 6} textAnchor="end" style={{ fill: "#5b6c82" }}>t [min]</text>
+            <text x={pad.l - 6} y={height - 6} textAnchor="end" style={{ fill: "var(--text3)" }}>t [min]</text>
             {thresholds.map((th) => (
               <g key={th.label}>
-                <line x1={pad.l} x2={pad.l + plotW} y1={y(th.value)} y2={y(th.value)} stroke={th.color} strokeDasharray="4 4" strokeOpacity={0.75} />
+                <line x1={pad.l} x2={pad.l + plotW} y1={y(th.value)} y2={y(th.value)} strokeDasharray="4 4" strokeOpacity={0.85} style={{ stroke: th.color }} />
                 <text x={pad.l + plotW - 2} y={y(th.value) - 3} textAnchor="end" style={{ fill: th.color }}>{th.label} {fmt(th.value, 1)}</text>
               </g>
             ))}
             {markers.map((m, i) => (
-              <line key={i} x1={x(m.t)} x2={x(m.t)} y1={pad.t} y2={pad.t + plotH} stroke={m.color} strokeOpacity={0.35}>
+              <line key={i} x1={x(m.t)} x2={x(m.t)} y1={pad.t} y2={pad.t + plotH} strokeOpacity={0.4} style={{ stroke: m.color }}>
                 <title>{m.label}</title>
               </line>
             ))}
@@ -144,7 +144,7 @@ export default function LineChart({
               <polyline
                 key={s.id}
                 fill="none"
-                stroke={s.color}
+                style={{ stroke: s.color }}
                 strokeWidth={s.dashed ? 1.4 : 1.9}
                 strokeDasharray={s.dashed ? "5 4" : undefined}
                 strokeOpacity={s.dashed ? 0.65 : 1}
@@ -152,9 +152,9 @@ export default function LineChart({
               />
             ))}
             {cursorT !== undefined && (
-              <line x1={x(cursorT)} x2={x(cursorT)} y1={pad.t} y2={pad.t + plotH} stroke="#e2e8f0" strokeOpacity={0.6} />
+              <line x1={x(cursorT)} x2={x(cursorT)} y1={pad.t} y2={pad.t + plotH} strokeOpacity={0.6} style={{ stroke: "var(--chart-cursor)" }} />
             )}
-            <rect x={pad.l} y={pad.t} width={plotW} height={plotH} fill="none" stroke="#2c405c" />
+            <rect x={pad.l} y={pad.t} width={plotW} height={plotH} fill="none" style={{ stroke: "var(--chart-axis)" }} />
           </svg>
         )}
       </div>

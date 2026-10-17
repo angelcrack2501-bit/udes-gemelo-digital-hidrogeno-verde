@@ -19,22 +19,21 @@ import {
   ScaleFigure, StackSkid, VentStack, VerticalVessel, WallFan, WaterPurifier,
 } from "./models";
 import type { Sample } from "@/sim/types";
+import { BRAND, type ThemeTokens } from "@/theme/tokens";
+import { useTheme } from "@/theme/ThemeProvider";
+import { STATUS_CSS } from "@/components/ui";
 
-export const STATUS_COLOR: Record<VisualStatus, string> = {
-  nominal: "#2dd4bf",
-  idle: "#64748b",
-  warning: "#f59e0b",
-  critical: "#ef4444",
-  fault: "#f97316",
-  nodata: "#475569",
-};
+/** Colores funcionales de estado (seguridad) tomados del tema activo. */
+export function statusColors(t: ThemeTokens): Record<VisualStatus, string> {
+  return { nominal: t.ok, idle: t.idle, warning: t.warn, critical: t.crit, fault: t.fault, nodata: t.idle };
+}
 
 function EquipmentModel({ id, sample }: { id: string; sample: Sample | null }) {
   const f = sample?.flags;
   switch (id) {
     case "PV-001": return <PVArray />;
     case "PSU-001": return <Cabinet w={0.8} h={2.0} d={0.6} accent="#f2b33d" />;
-    case "PLC-001": return <Cabinet w={0.6} h={1.85} d={0.45} color="#c7cfd8" accent="#22d3ee" />;
+    case "PLC-001": return <Cabinet w={0.6} h={1.85} d={0.45} color="#c7cfd8" accent={BRAND.azul} />;
     case "WP-001": return <WaterPurifier />;
     case "TK-001": return <VerticalVessel r={0.2} h={1.0} legs={0.15} color="#dbe4ee" metal={0.15} />;
     case "P-001": return <Pump color="#2563eb" running={f?.electrolyzer === "running"} />;
@@ -57,6 +56,8 @@ function EquipmentModel({ id, sample }: { id: string; sample: Sample | null }) {
 }
 
 function StatusBeacon({ y, status }: { y: number; status: VisualStatus }) {
+  const { tokens } = useTheme();
+  const color = statusColors(tokens)[status];
   const ref = useRef<THREE.Mesh>(null);
   const alert = status === "critical" || status === "warning" || status === "fault";
   useFrame(({ clock }) => {
@@ -67,7 +68,7 @@ function StatusBeacon({ y, status }: { y: number; status: VisualStatus }) {
   return (
     <mesh ref={ref} position={[0, y, 0]}>
       <sphereGeometry args={[0.055, 16, 12]} />
-      <meshStandardMaterial color={STATUS_COLOR[status]} emissive={STATUS_COLOR[status]} emissiveIntensity={1} toneMapped={false} />
+      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1} toneMapped={false} />
     </mesh>
   );
 }
@@ -93,7 +94,8 @@ function EquipmentNode({
 }) {
   const p = PLACEMENTS[id];
   const eq = equipmentById.get(id)!;
-  const visual = useMemo(() => ({ dim, glow: selected ? 0.28 : hovered ? 0.16 : 0, glowColor: "#22d3ee" }), [dim, selected, hovered]);
+  const { tokens } = useTheme();
+  const visual = useMemo(() => ({ dim, glow: selected ? 0.32 : hovered ? 0.18 : 0, glowColor: tokens.brandLine }), [dim, selected, hovered, tokens.brandLine]);
   const handlers = {
     onPointerOver: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); onHover(id); document.body.style.cursor = "pointer"; },
     onPointerOut: () => { onHover(null); document.body.style.cursor = ""; },
@@ -115,7 +117,7 @@ function EquipmentNode({
           <EquipmentModel id={id} sample={sample} />
         </group>
       </EquipmentVisual.Provider>
-      {!dim && p.position[1] < 0.5 && (selected || hovered) && <SelectionRing r={p.ring} color={selected ? "#22d3ee" : "#94a3b8"} pulse={selected} />}
+      {!dim && p.position[1] < 0.5 && (selected || hovered) && <SelectionRing r={p.ring} color={selected ? BRAND.dorado : tokens.brandLine} pulse={selected} />}
       {!dim && state.status !== "nodata" && <StatusBeacon y={p.labelY - 0.22} status={state.status} />}
       {showLabel && !dim && (
         <LodLabel y={p.labelY} minor={MINOR_LABELS.has(id) && !selected && !hovered}>
@@ -158,7 +160,7 @@ function LabelChip({ id, name, state, selected, onSelect }: { id: string; name: 
       title={`${name} — ${state.label}`}
       data-testid={`label-${id}`}
     >
-      <span className="dot" style={{ background: STATUS_COLOR[state.status] }} />
+      <span className="dot" style={{ background: STATUS_CSS[state.status] }} />
       <span className="tag">{id}</span>
       {selected && <span className="name">{name}</span>}
     </button>
@@ -242,7 +244,7 @@ function Pipe({ id, active, intensity, highlight, dim, showFlow }: { id: string;
   );
 }
 
-function Room({ showZones }: { showZones: boolean }) {
+function Room({ showZones, t }: { showZones: boolean; t: ThemeTokens }) {
   const w = ROOM.maxX - ROOM.minX;
   const d = ROOM.maxZ - ROOM.minZ;
   const cx = (ROOM.maxX + ROOM.minX) / 2;
@@ -256,17 +258,17 @@ function Room({ showZones }: { showZones: boolean }) {
       {/* terreno */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow>
         <planeGeometry args={[80, 80]} />
-        <meshStandardMaterial color="#222c38" roughness={0.95} />
+        <meshStandardMaterial color={t.sceneGround} roughness={0.95} />
       </mesh>
       {/* losa exterior */}
       <mesh position={[0.5, -0.01, -0.5]} receiveShadow>
         <boxGeometry args={[24, 0.02, 12]} />
-        <meshStandardMaterial color="#3b434d" roughness={0.92} />
+        <meshStandardMaterial color={t.sceneSlab} roughness={0.92} />
       </mesh>
       {/* piso epóxico del recinto */}
       <mesh position={[cx, 0.002, cz]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[w, d]} />
-        <meshStandardMaterial color="#4a5560" roughness={0.55} metalness={0.05} />
+        <meshStandardMaterial color={t.sceneFloor} roughness={0.55} metalness={0.05} />
       </mesh>
       {/* líneas de pasillo */}
       {[ROOM.minZ + 0.15, ROOM.maxZ - 0.15].map((z) => (
@@ -278,7 +280,7 @@ function Room({ showZones }: { showZones: boolean }) {
       {/* muro posterior (corte de visualización: sin muro frontal ni techo) */}
       <mesh position={[cx, ROOM.height / 2, ROOM.minZ - 0.06]} receiveShadow castShadow>
         <boxGeometry args={[w + 0.12, ROOM.height, 0.12]} />
-        <meshStandardMaterial color="#5b6672" roughness={0.85} />
+        <meshStandardMaterial color={t.sceneWall} roughness={0.85} />
       </mesh>
       <mesh position={[ROOM.minX - 0.03, ROOM.height / 2, cz]}>
         <boxGeometry args={[0.04, ROOM.height, d]} />
@@ -287,7 +289,7 @@ function Room({ showZones }: { showZones: boolean }) {
       {/* murete inferior izquierdo */}
       <mesh position={[ROOM.minX - 0.06, 0.45, cz]} receiveShadow castShadow>
         <boxGeometry args={[0.12, 0.9, d]} />
-        <meshStandardMaterial color="#56616c" roughness={0.85} />
+        <meshStandardMaterial color={t.sceneWall} roughness={0.85} />
       </mesh>
       {/* muro lateral derecho translúcido */}
       <mesh position={[ROOM.maxX + 0.03, ROOM.height / 2, cz]}>
@@ -298,19 +300,19 @@ function Room({ showZones }: { showZones: boolean }) {
       {posts.map((p, i) => (
         <mesh key={i} position={[p[0], ROOM.height / 2, p[2]]} castShadow>
           <boxGeometry args={[0.12, ROOM.height, 0.12]} />
-          <meshStandardMaterial color="#2f3a46" metalness={0.6} roughness={0.45} />
+          <meshStandardMaterial color={t.sceneSteel} metalness={0.6} roughness={0.45} />
         </mesh>
       ))}
       {[ROOM.minZ, ROOM.maxZ].map((z) => (
         <mesh key={z} position={[cx, ROOM.height, z]} castShadow>
           <boxGeometry args={[w + 0.12, 0.16, 0.12]} />
-          <meshStandardMaterial color="#2f3a46" metalness={0.6} roughness={0.45} />
+          <meshStandardMaterial color={t.sceneSteel} metalness={0.6} roughness={0.45} />
         </mesh>
       ))}
       {[ROOM.minX, cx, ROOM.maxX].map((x) => (
         <mesh key={x} position={[x, ROOM.height, cz]} castShadow>
           <boxGeometry args={[0.12, 0.16, d]} />
-          <meshStandardMaterial color="#2f3a46" metalness={0.6} roughness={0.45} />
+          <meshStandardMaterial color={t.sceneSteel} metalness={0.6} roughness={0.45} />
         </mesh>
       ))}
       {/* soportes del rack de tuberías */}
@@ -332,14 +334,14 @@ function Room({ showZones }: { showZones: boolean }) {
         <group>
           <mesh position={[4.3, 0.006, -0.6]} rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry args={[4.6, 3.6]} />
-            <meshBasicMaterial color="#22d3ee" transparent opacity={0.1} depthWrite={false} />
+            <meshBasicMaterial color={t.brandLine} transparent opacity={0.14} depthWrite={false} />
           </mesh>
           <Html position={[4.3, 0.05, 1.1]} center zIndexRange={[10, 0]}>
             <div className="zone-label">Área de equipos de H2 · indicativa (no es clasificación de áreas)</div>
           </Html>
           <mesh position={[-6.6, 0.006, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry args={[5.2, 5.6]} />
-            <meshBasicMaterial color="#f2b33d" transparent opacity={0.08} depthWrite={false} />
+            <meshBasicMaterial color={BRAND.dorado} transparent opacity={0.14} depthWrite={false} />
           </mesh>
           <Html position={[-7.6, 0.05, 3.0]} center zIndexRange={[10, 0]}>
             <div className="zone-label">Exterior · generación FV conceptual</div>
@@ -445,12 +447,13 @@ function SceneContent() {
   const isolate = state.isolate && !!sel;
   const select = (id: string) => dispatch({ type: "select", id });
   const initial = CAMERA_PRESETS.general;
+  const { tokens: t, theme } = useTheme();
 
   return (
     <>
-      <color attach="background" args={["#0d141e"]} />
-      <fog attach="fog" args={["#0b1018", 28, 60]} />
-      <hemisphereLight args={["#d6ecff", "#2a3442", 0.9]} />
+      <color attach="background" args={[t.sceneBg]} />
+      <fog attach="fog" args={[t.sceneBg, 28, 60]} />
+      <hemisphereLight args={["#d6ecff", theme === "light" ? "#8d99a6" : "#2a3442", theme === "light" ? 1.1 : 0.9]} />
       <directionalLight
         position={[8, 14, 9]}
         intensity={2.8}
@@ -475,7 +478,7 @@ function SceneContent() {
       </Environment>
 
       <group onPointerMissed={() => undefined}>
-        <Room showZones={state.layers.zones} />
+        <Room showZones={state.layers.zones} t={t} />
         <group position={[-1.7, 0, 0.6]}>
           <ScaleFigure />
           {state.layers.labels && (

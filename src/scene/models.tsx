@@ -15,7 +15,7 @@ export interface VisualCtx {
   glowColor: string;
 }
 
-export const EquipmentVisual = createContext<VisualCtx>({ dim: false, glow: 0, glowColor: "#22d3ee" });
+export const EquipmentVisual = createContext<VisualCtx>({ dim: false, glow: 0, glowColor: "#4a88cc" });
 
 export function Mat({ color, metal = 0.2, rough = 0.6, emissive, emissiveIntensity = 0, opacity = 1 }: { color: string; metal?: number; rough?: number; emissive?: string; emissiveIntensity?: number; opacity?: number }) {
   const v = useContext(EquipmentVisual);
@@ -451,7 +451,7 @@ export function WaterPurifier() {
       </mesh>
       <mesh position={[0.32, 0.8, 0.182]}>
         <boxGeometry args={[0.16, 0.08, 0.005]} />
-        <Mat color="#0b1622" emissive="#22d3ee" emissiveIntensity={0.5} />
+        <Mat color="#0b1622" emissive="#4a88cc" emissiveIntensity={0.6} />
       </mesh>
     </group>
   );

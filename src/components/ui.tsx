@@ -49,12 +49,12 @@ export const STATUS_CSS: Record<VisualStatus, string> = {
   warning: "var(--warn)",
   critical: "var(--crit)",
   fault: "var(--fault)",
-  nodata: "#475569",
+  nodata: "var(--idle)",
 };
 
 export function StatusPill({ status, label }: { status: VisualStatus; label?: string }) {
   return (
-    <span className="chip" style={{ borderColor: `${STATUS_CSS[status]}66`, color: STATUS_CSS[status] }}>
+    <span className="chip" style={{ borderColor: `color-mix(in srgb, ${STATUS_CSS[status]} 45%, transparent)`, color: STATUS_CSS[status] }}>
       <span className="dot" style={{ background: STATUS_CSS[status] }} />
       {label ?? STATUS_LABEL[status]}
     </span>
