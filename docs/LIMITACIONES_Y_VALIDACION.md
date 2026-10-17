@@ -40,7 +40,7 @@ Ecuaciones completas con unidades, rango de validez y limitaciones: aplicación 
 
 Resultados nominales (ESC-01, 3,5 kW): I ≈ 98 A, V_celda ≈ 1,79 V, 0,072 kg/h (0,80 Nm³/h), η_PCS ≈ 81 %, CEE ≈ 48,4 kWh/kg **a nivel de pila**. Son coherentes con el orden de magnitud de pilas PEM, pero **no están calibrados** contra ningún equipo real.
 
-## 4. Pruebas automatizadas (Vitest) — 43 pruebas, 5 archivos
+## 4. Pruebas automatizadas (Vitest) — 48 pruebas, 6 archivos
 
 | Archivo | Qué valida |
 |---|---|
@@ -48,9 +48,10 @@ Resultados nominales (ESC-01, 3,5 kW): I ≈ 98 A, V_celda ≈ 1,79 V, 0,072 kg/
 | `src/sim/engine.test.ts` (18) | Determinismo (resultados idénticos en los 6 escenarios); muestreo; *clamping* de entradas; **balance de masa del tanque** (Δn = producido − consumido − venteado − fugado); agua estequiométrica ≈ 8,94 kg/kg; secuencias PAH→PAHH, TAH→TAHH, GD alarma→disparo; PSV no abre en ESC-03; PT-201 congelado → sin PAHH y apertura de PSV; recuperación y rearme; perfil FV. |
 | `src/domain/topology.test.ts` (6) | Planta sin errores; detección de referencias rotas, fluidos incompatibles y duplicados; aguas arriba/abajo; rutas de influencia. |
 | `src/training/mission.test.ts` (6) | Respuestas esperadas derivadas de las corridas; puntaje 100 con respuestas correctas; «apagar la pila» no obtiene puntaje de producción; tolerancias; `canAdvance` exige acciones reales. |
+| `src/theme/tokens.test.ts` (5) | Colores institucionales UDES; contraste WCAG de todos los pares texto/fondo en modo claro y oscuro; generación de variables CSS. |
 | `src/guide/engine.test.ts` (6) | Clasificación de intención; explicación del disparo con regla/umbral/causa; números citados provienen de la corrida; comparación con línea base; protección ante preguntas sobre la planta real. |
 
-Comandos: `npm test`, `npm run typecheck`, `npm run lint`, `npm run build` (todos en verde al cierre de esta versión).
+Comandos: `npm test`, `npm run typecheck`, `npm run lint`, `npm run build` y `npm run e2e` (recorrido de demostración con Playwright, 8 pruebas).
 
 ## 5. Verificación en la aplicación (realizada)
 
